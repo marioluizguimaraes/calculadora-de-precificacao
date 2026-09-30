@@ -1,0 +1,2 @@
+cd calculadora-de-precificacao
+npx --no -- commitlint --edit "$1"

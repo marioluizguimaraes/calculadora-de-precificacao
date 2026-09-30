@@ -1,0 +1,2 @@
+cd calculadora-de-precificacao
+npx lint-staged
