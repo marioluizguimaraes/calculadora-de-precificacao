@@ -1,0 +1,321 @@
+/*
+ * Ordem das camadas de UI:
+ *   1. Tailwind CSS v4 — utilitários
+ *   2. HeroUI v3        — biblioteca principal; é DONA do tema (cores, radius, dark mode)
+ *   3. Ponte shadcn/ui  — tokens que o shadcn espera, apontando para os tokens do HeroUI
+ *
+ * O @heroui/styles já importa `tailwindcss` e `tw-animate-css` (usado pelo shadcn).
+ * Dark mode: `data-theme="dark"` no <html> ou classe `.dark`. O padrão do app é o claro.
+ */
+@import 'tailwindcss';
+@import '@heroui/styles';
+@import '@fontsource-variable/onest';
+@import '@fontsource-variable/martian-mono';
+
+/*
+ * Ponte shadcn/ui → HeroUI.
+ * Só define os tokens que o HeroUI NÃO tem. `background`, `foreground`, `border` e `radius`
+ * já são compatíveis e vêm do HeroUI.
+ *
+ * ATENÇÃO — tokens com o mesmo nome e significados diferentes (não redefinir aqui):
+ *   HeroUI `muted`  = cor de TEXTO secundário | shadcn `bg-muted`  = fundo sutil
+ *   HeroUI `accent` = cor da MARCA            | shadcn `bg-accent` = fundo de hover
+ * Ao adicionar um componente shadcn, troque essas classes conforme docs/UI-LIBRARIES.md.
+ */
+@theme inline {
+  --color-primary: var(--accent);
+  --color-primary-foreground: var(--accent-foreground);
+  --color-secondary: var(--default);
+  --color-secondary-foreground: var(--default-foreground);
+  --color-muted-foreground: var(--muted);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--surface-foreground);
+  --color-popover: var(--overlay);
+  --color-popover-foreground: var(--overlay-foreground);
+  --color-destructive: var(--danger);
+  --color-destructive-foreground: var(--danger-foreground);
+  --color-input: var(--field-border);
+  --color-ring: var(--focus);
+
+  /* Identidade: creme, laranja e marrom-café */
+  --color-ink: var(--ink);
+  --color-ink-foreground: var(--ink-foreground);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-raised: var(--ink-raised);
+  --color-amber: var(--amber);
+  --color-amber-foreground: var(--amber-foreground);
+  --color-peach: var(--peach);
+  --color-headline-soft: var(--headline-soft);
+
+  /* Paletas de dados (tons quentes, distintos entre si nos dois temas) */
+  --color-stage-pre: var(--stage-pre);
+  --color-stage-producao: var(--stage-producao);
+  --color-stage-pos: var(--stage-pos);
+  --color-cost-trabalho: var(--cost-trabalho);
+  --color-cost-equipe: var(--cost-equipe);
+  --color-cost-equipamentos: var(--cost-equipamentos);
+  --color-cost-logistica: var(--cost-logistica);
+  --color-cost-impostos: var(--cost-impostos);
+  --color-cost-lucro: var(--cost-lucro);
+  --color-rec: var(--rec);
+
+  --font-sans: 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Martian Mono Variable', ui-monospace, monospace;
+}
+
+/*
+ * Identidade "caixa do estúdio": fundo creme, cartões quase brancos, um único destaque
+ * laranja por tela e um painel marrom-café para o que exige decisão.
+ */
+:root,
+[data-theme='light'] {
+  --radius: 0.5rem;
+  --field-radius: 0.625rem;
+  --background: #f5eee6;
+  --foreground: #1e140e;
+  --surface: #fbf8f4;
+  --surface-foreground: #1e140e;
+  --surface-secondary: #f3ebe2;
+  --surface-tertiary: #ebe0d4;
+  --surface-shadow: 0 1px 0 0 rgb(255 255 255 / 0.8) inset, 0 10px 30px -12px rgb(92 58 30 / 0.16);
+  --overlay: #fffdfa;
+  --overlay-foreground: #1e140e;
+  --muted: #7a685a;
+  --default: #eee4d9;
+  --default-foreground: #1e140e;
+  --border: #eadfd2;
+  --separator: #ede3d8;
+  --accent: #ec6a1f;
+  --accent-foreground: #ffffff;
+  --focus: #ec6a1f;
+  --field-background: #fffdfa;
+  --field-foreground: #1e140e;
+  --field-placeholder: #a8978a;
+  --field-border: #e6d9cb;
+  --field-shadow: 0 1px 2px 0 rgb(92 58 30 / 0.05);
+  --danger: #d23f22;
+  --warning: #e79a1c;
+  --success: #2c8a5f;
+  --rec: #ec6a1f;
+
+  --ink: #4b3a2b;
+  --ink-foreground: #fbf3ea;
+  --ink-muted: #cdb8a3;
+  --ink-raised: #5a4735;
+  --amber: #f6bd5c;
+  --amber-foreground: #3a2511;
+  --peach: #f7d7b2;
+  --headline-soft: #6f5a47;
+  --glow: rgb(246 189 92 / 0.55);
+
+  --stage-pre: #f2ac3d;
+  --stage-producao: #ec6a1f;
+  --stage-pos: #8a5634;
+  --cost-trabalho: #ec6a1f;
+  --cost-equipe: #f2ac3d;
+  --cost-equipamentos: #a3421c;
+  --cost-logistica: #dcc1a1;
+  --cost-impostos: #4b3a2b;
+  --cost-lucro: #2c8a5f;
+}
+
+[data-theme='dark'] {
+  --background: #16100c;
+  --foreground: #f7ede3;
+  --surface: #211812;
+  --surface-foreground: #f7ede3;
+  --surface-secondary: #2a1f18;
+  --surface-tertiary: #34271e;
+  --surface-shadow: 0 1px 0 0 rgb(255 255 255 / 0.04) inset, 0 12px 30px -14px rgb(0 0 0 / 0.6);
+  --overlay: #251b14;
+  --overlay-foreground: #f7ede3;
+  --muted: #b39f8d;
+  --default: #2f231b;
+  --default-foreground: #f7ede3;
+  --border: #3a2c22;
+  --separator: #33271e;
+  --accent: #f47b30;
+  --accent-foreground: #1a0e06;
+  --focus: #f47b30;
+  --field-background: #1b140f;
+  --field-foreground: #f7ede3;
+  --field-placeholder: #7d6a5b;
+  --field-border: #3a2c22;
+  --danger: #ff6a4d;
+  --warning: #f2ac3d;
+  --success: #45b381;
+  --rec: #f47b30;
+
+  --ink: #3a2b20;
+  --ink-foreground: #fbf3ea;
+  --ink-muted: #c9b29c;
+  --ink-raised: #4a3829;
+  --amber: #f2ac3d;
+  --amber-foreground: #2a1a0a;
+  --peach: #5a3a22;
+  --headline-soft: #b9a08a;
+  --glow: rgb(236 106 31 / 0.22);
+
+  --stage-pre: #f2ac3d;
+  --stage-producao: #f47b30;
+  --stage-pos: #c58a5e;
+  --cost-trabalho: #f47b30;
+  --cost-equipe: #f2ac3d;
+  --cost-equipamentos: #c9542a;
+  --cost-logistica: #b89877;
+  --cost-impostos: #8f7663;
+  --cost-lucro: #45b381;
+}
+
+/* Títulos grandes, pesados e apertados — como as manchetes do print de referência. */
+@utility font-display {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+/* Rótulos curtos (antes técnicos, agora em tom de conversa). */
+@utility font-slate {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Cartão padrão: quase branco sobre o creme, borda discreta e sombra quente. */
+@utility card-soft {
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--surface-shadow);
+}
+
+/*
+ * O destaque da tela: laranja com brilho interno. Só UM por tela — o olhar
+ * vai primeiro para ele (princípio "um acento" do print de referência).
+ */
+@utility card-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 1rem;
+  color: #fff;
+  background:
+    radial-gradient(120% 90% at 85% 40%, rgb(255 190 110 / 0.35), transparent 55%),
+    radial-gradient(80% 60% at 0% 100%, rgb(190 60 0 / 0.35), transparent 60%),
+    linear-gradient(160deg, #f37a2c 0%, #ec6a1f 45%, #e05a12 100%);
+  box-shadow:
+    0 1px 0 0 rgb(255 255 255 / 0.25) inset,
+    0 24px 50px -22px rgb(236 106 31 / 0.65);
+}
+
+/* Painel escuro: reúne o que exige decisão e não se mistura com estatística. */
+@utility card-ink {
+  border-radius: 1rem;
+  background: var(--ink);
+  color: var(--ink-foreground);
+  box-shadow: 0 24px 50px -24px rgb(40 24 12 / 0.55);
+}
+
+/* Destaque de texto dentro do cartão laranja (ex.: "este mês"). */
+@utility text-on-hero-soft {
+  color: #ffd59a;
+}
+
+/* Brilho âmbar difuso atrás das seções (elemento decorativo do print). */
+@utility glow-blob {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 9999px;
+  background: radial-gradient(closest-side, var(--glow), transparent);
+}
+
+/* Pílula de status/etiqueta — as "tags" flutuantes do print. */
+@utility pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 9999px;
+  padding: 0.5rem 1.1rem;
+  font-weight: 600;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+@keyframes live-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 55%, transparent);
+  }
+  60% {
+    box-shadow: 0 0 0 6px transparent;
+  }
+}
+
+/* Indicador "ao vivo": ponto laranja pulsando. */
+@utility rec-dot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: var(--rec);
+  animation: live-pulse 1.8s ease-out infinite;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+/* Mantido por compatibilidade: sem guias de câmera na nova identidade. */
+@utility frame-guides {
+  position: relative;
+}
+
+@keyframes float-y {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -6px;
+  }
+}
+
+@utility float-slow {
+  animation: float-y 6s ease-in-out infinite;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+    min-height: 100dvh;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--accent) 30%, transparent);
+  }
+
+  :focus-visible {
+    outline-color: var(--focus);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
