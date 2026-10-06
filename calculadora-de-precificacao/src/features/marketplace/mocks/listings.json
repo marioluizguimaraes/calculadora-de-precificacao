@@ -1,0 +1,136 @@
+[
+  {
+    "id": "of-lia-casamento",
+    "owner": {
+      "id": "u-lia",
+      "name": "Lia Campos",
+      "businessName": "Lia Campos Filmes",
+      "headline": "Filmes de casamento com cara de cinema",
+      "city": { "name": "São Paulo", "uf": "SP" }
+    },
+    "quoteId": null,
+    "title": "Filme de casamento completo (2 câmeras + drone)",
+    "description": "Cobertura do making of à festa, com duas câmeras, captação de som dos votos e imagens aéreas. Entrega de filme curto para redes e filme longo da cerimônia.",
+    "tier": 2,
+    "services": [
+      { "label": "Reunião com os noivos", "stage": "pre", "hours": 2 },
+      { "label": "Visita técnica", "stage": "pre", "hours": 3 },
+      { "label": "Captação (2 câmeras)", "stage": "producao", "hours": 12 },
+      { "label": "Imagens aéreas", "stage": "producao", "hours": 2 },
+      { "label": "Edição e color", "stage": "pos", "hours": 30 },
+      { "label": "Trilha licenciada", "stage": "pos", "hours": 2 }
+    ],
+    "deliverables": "Teaser de 1 min, filme de 10 a 15 min e cerimônia na íntegra.",
+    "priceCents": 780000,
+    "showPrice": true,
+    "tags": ["Casamentos", "Imagens aéreas (drone)"],
+    "status": "ativa",
+    "publishedAt": "2026-09-20T14:00:00.000Z",
+    "updatedAt": "2026-09-20T14:00:00.000Z"
+  },
+  {
+    "id": "of-lia-ensaio",
+    "owner": {
+      "id": "u-lia",
+      "name": "Lia Campos",
+      "businessName": "Lia Campos Filmes",
+      "headline": "Filmes de casamento com cara de cinema",
+      "city": { "name": "São Paulo", "uf": "SP" }
+    },
+    "quoteId": null,
+    "title": "Save the date em vídeo",
+    "description": "Um curta de 1 minuto para anunciar o casamento, gravado em um único local, com roteiro simples.",
+    "tier": 1,
+    "services": [
+      { "label": "Roteiro", "stage": "pre", "hours": 2 },
+      { "label": "Captação", "stage": "producao", "hours": 4 },
+      { "label": "Edição", "stage": "pos", "hours": 6 }
+    ],
+    "deliverables": "Vídeo de 1 min nos formatos vertical e horizontal.",
+    "priceCents": 180000,
+    "showPrice": true,
+    "tags": ["Casamentos", "Redes sociais"],
+    "status": "ativa",
+    "publishedAt": "2026-09-02T10:00:00.000Z",
+    "updatedAt": "2026-09-02T10:00:00.000Z"
+  },
+  {
+    "id": "of-rafa-evento",
+    "owner": {
+      "id": "u-rafa",
+      "name": "Rafael Nunes",
+      "businessName": "Nunes Produções",
+      "headline": "Eventos corporativos e transmissões ao vivo",
+      "city": { "name": "Rio de Janeiro", "uf": "RJ" }
+    },
+    "quoteId": null,
+    "title": "Cobertura de evento corporativo com transmissão ao vivo",
+    "description": "Três câmeras, mesa de corte e transmissão para YouTube ou plataforma própria. Aftermovie entregue em até 5 dias úteis.",
+    "tier": 3,
+    "services": [
+      { "label": "Planejamento técnico", "stage": "pre", "hours": 6 },
+      { "label": "Montagem e testes", "stage": "producao", "hours": 4 },
+      { "label": "Transmissão multicâmera", "stage": "producao", "hours": 8 },
+      { "label": "Aftermovie", "stage": "pos", "hours": 16 }
+    ],
+    "deliverables": "Transmissão ao vivo, gravação integral e aftermovie de 2 min.",
+    "priceCents": 0,
+    "showPrice": false,
+    "tags": ["Eventos corporativos", "Transmissão ao vivo"],
+    "status": "ativa",
+    "publishedAt": "2026-09-15T09:30:00.000Z",
+    "updatedAt": "2026-09-15T09:30:00.000Z"
+  },
+  {
+    "id": "of-bia-reels",
+    "owner": {
+      "id": "u-bia",
+      "name": "Beatriz Lopes",
+      "businessName": "Bia Motion",
+      "headline": "Reels, motion e edição para redes sociais",
+      "city": { "name": "Curitiba", "uf": "PR" }
+    },
+    "quoteId": null,
+    "title": "Pacote mensal: 8 reels editados com motion",
+    "description": "Você manda o material bruto, eu devolvo oito vídeos curtos com legendas animadas, cortes dinâmicos e identidade da marca.",
+    "tier": 1,
+    "services": [
+      { "label": "Planejamento de pautas", "stage": "pre", "hours": 3 },
+      { "label": "Edição", "stage": "pos", "hours": 20 },
+      { "label": "Motion e legendas", "stage": "pos", "hours": 8 }
+    ],
+    "deliverables": "8 vídeos verticais de até 60 s por mês.",
+    "priceCents": 240000,
+    "showPrice": true,
+    "tags": ["Redes sociais", "Motion design", "Edição e color"],
+    "status": "ativa",
+    "publishedAt": "2026-09-25T18:00:00.000Z",
+    "updatedAt": "2026-09-25T18:00:00.000Z"
+  },
+  {
+    "id": "of-demo-institucional",
+    "owner": {
+      "id": "u-demo",
+      "name": "Mario Demo",
+      "businessName": "Claquete Filmes",
+      "headline": "Filmes institucionais e conteúdo para marcas",
+      "city": { "name": "Belo Horizonte", "uf": "MG" }
+    },
+    "quoteId": null,
+    "title": "Vídeo institucional de 2 minutos",
+    "description": "Roteiro, um dia de gravação com entrevistas e imagens de apoio, edição com trilha licenciada e duas rodadas de ajustes.",
+    "tier": 2,
+    "services": [
+      { "label": "Roteiro", "stage": "pre", "hours": 6 },
+      { "label": "Captação", "stage": "producao", "hours": 8 },
+      { "label": "Edição e color", "stage": "pos", "hours": 18 }
+    ],
+    "deliverables": "Vídeo de 2 min em 4K e uma versão de 30 s para redes.",
+    "priceCents": 520000,
+    "showPrice": true,
+    "tags": ["Institucional", "Edição e color"],
+    "status": "ativa",
+    "publishedAt": "2026-09-10T11:00:00.000Z",
+    "updatedAt": "2026-09-10T11:00:00.000Z"
+  }
+]

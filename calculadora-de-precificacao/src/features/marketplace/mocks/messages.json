@@ -1,0 +1,30 @@
+[
+  {
+    "id": "msg-1",
+    "conversationId": "cv-demo-lia",
+    "senderId": "u-demo",
+    "text": "Oi, Lia! Vocês atendem casamento em Campinas? Seria em março.",
+    "createdAt": "2026-09-26T13:00:00.000Z"
+  },
+  {
+    "id": "msg-2",
+    "conversationId": "cv-demo-lia",
+    "senderId": "u-lia",
+    "text": "Oi! Atendemos sim. O deslocamento entra à parte — me passa a data e o local da festa que eu fecho o valor.",
+    "createdAt": "2026-09-26T13:25:00.000Z"
+  },
+  {
+    "id": "msg-3",
+    "conversationId": "cv-rafa-demo",
+    "senderId": "u-rafa",
+    "text": "Bom dia! Preciso de um institucional para um cliente de logística em BH. Dá para incluir imagens de drone no galpão?",
+    "createdAt": "2026-09-27T16:00:00.000Z"
+  },
+  {
+    "id": "msg-4",
+    "conversationId": "cv-rafa-demo",
+    "senderId": "u-rafa",
+    "text": "O prazo seria para o fim de outubro.",
+    "createdAt": "2026-09-27T16:10:00.000Z"
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "id": "cv-demo-lia",
+    "listingId": "of-lia-casamento",
+    "listingTitle": "Filme de casamento completo (2 câmeras + drone)",
+    "owner": {
+      "id": "u-lia",
+      "name": "Lia Campos",
+      "businessName": "Lia Campos Filmes",
+      "headline": "Filmes de casamento com cara de cinema",
+      "city": { "name": "São Paulo", "uf": "SP" }
+    },
+    "buyer": {
+      "id": "u-demo",
+      "name": "Mario Demo",
+      "businessName": "Claquete Filmes",
+      "headline": "Filmes institucionais e conteúdo para marcas",
+      "city": { "name": "Belo Horizonte", "uf": "MG" }
+    },
+    "createdAt": "2026-09-26T13:00:00.000Z",
+    "lastReadAt": { "u-demo": "2026-09-26T13:00:00.000Z", "u-lia": "2026-09-26T13:00:00.000Z" }
+  },
+  {
+    "id": "cv-rafa-demo",
+    "listingId": "of-demo-institucional",
+    "listingTitle": "Vídeo institucional de 2 minutos",
+    "owner": {
+      "id": "u-demo",
+      "name": "Mario Demo",
+      "businessName": "Claquete Filmes",
+      "headline": "Filmes institucionais e conteúdo para marcas",
+      "city": { "name": "Belo Horizonte", "uf": "MG" }
+    },
+    "buyer": {
+      "id": "u-rafa",
+      "name": "Rafael Nunes",
+      "businessName": "Nunes Produções",
+      "headline": "Eventos corporativos e transmissões ao vivo",
+      "city": { "name": "Rio de Janeiro", "uf": "RJ" }
+    },
+    "createdAt": "2026-09-27T16:00:00.000Z",
+    "lastReadAt": { "u-rafa": "2026-09-27T16:10:00.000Z" }
+  }
+]
