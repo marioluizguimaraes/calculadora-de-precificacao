@@ -2,15 +2,17 @@ import {
   Calculator,
   FileText,
   History,
+  MessagesSquare,
   Moon,
   Plus,
   Settings2,
   SlidersHorizontal,
+  Store,
   Sun,
 } from 'lucide-react';
 import { useNavigate } from 'react-router';
 
-import { quoteTitle, useHistoryStore } from '@/features/quote';
+import { quoteTitle, useSavedQuotes } from '@/features/quote';
 import {
   Command,
   CommandDialog,
@@ -32,7 +34,7 @@ interface CommandPaletteProps {
 /** Atalhos de navegação (Ctrl/⌘ + K). */
 export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const navigate = useNavigate();
-  const quotes = useHistoryStore((s) => s.quotes);
+  const { quotes } = useSavedQuotes();
   const { theme, toggle } = useTheme();
 
   const run = (action: () => void) => {
@@ -86,6 +88,22 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               }}
             >
               <History /> Orçamentos salvos
+            </CommandItem>
+            <CommandItem
+              textValue="Marketplace buscar serviços ofertas videomaker"
+              onAction={() => {
+                run(() => void navigate('/servicos'));
+              }}
+            >
+              <Store /> Buscar serviços
+            </CommandItem>
+            <CommandItem
+              textValue="Mensagens chat conversas"
+              onAction={() => {
+                run(() => void navigate('/mensagens'));
+              }}
+            >
+              <MessagesSquare /> Mensagens
             </CommandItem>
             <CommandItem
               textValue="Meu estúdio custos configurações"

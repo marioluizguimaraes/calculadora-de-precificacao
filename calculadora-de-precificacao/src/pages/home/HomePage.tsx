@@ -10,7 +10,7 @@ import {
   hasDraftContent,
   useDraftStore,
 } from '@/features/pricing';
-import { quoteTitle, useHistoryStore } from '@/features/quote';
+import { quoteTitle, useSavedQuotes } from '@/features/quote';
 import { applyPreset, PROJECT_PRESETS } from '@/features/services';
 import { Glow, NumberedPoint, Pill, TwoToneHeading } from '@/shared/components/brand/Decor';
 import { FloatingPills, type FloatingPillSpec } from '@/shared/components/motion/FloatingPills';
@@ -109,7 +109,7 @@ const PILLS: FloatingPillSpec[] = [
 export function HomePage() {
   const navigate = useNavigate();
   const draft = useDraftStore((s) => s.draft);
-  const quotes = useHistoryStore((s) => s.quotes);
+  const { quotes } = useSavedQuotes();
   const demo = useDemo();
   const hasDraft = hasDraftContent(draft);
 

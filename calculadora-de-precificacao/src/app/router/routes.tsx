@@ -2,6 +2,8 @@ import { Spinner } from '@heroui/react';
 import { lazy, Suspense, type ReactNode } from 'react';
 import { createBrowserRouter } from 'react-router';
 
+import { RequireAuth } from '@/features/auth';
+
 import { AppShell } from '../layout/AppShell';
 import { RouteError } from '../layout/RouteError';
 
@@ -29,6 +31,24 @@ const PricingBreakdownPage = lazy(() =>
     default: m.PricingBreakdownPage,
   })),
 );
+const LoginPage = lazy(() =>
+  import('@/pages/auth/LoginPage').then((m) => ({ default: m.LoginPage })),
+);
+const SignUpPage = lazy(() =>
+  import('@/pages/auth/SignUpPage').then((m) => ({ default: m.SignUpPage })),
+);
+const MarketplacePage = lazy(() =>
+  import('@/pages/marketplace/MarketplacePage').then((m) => ({ default: m.MarketplacePage })),
+);
+const ListingPage = lazy(() =>
+  import('@/pages/marketplace/ListingPage').then((m) => ({ default: m.ListingPage })),
+);
+const MessagesPage = lazy(() =>
+  import('@/pages/messages/MessagesPage').then((m) => ({ default: m.MessagesPage })),
+);
+const AccountPage = lazy(() =>
+  import('@/pages/account/AccountPage').then((m) => ({ default: m.AccountPage })),
+);
 const NotFoundPage = lazy(() =>
   import('@/pages/not-found/NotFoundPage').then((m) => ({ default: m.NotFoundPage })),
 );
@@ -48,6 +68,25 @@ function Page({ children }: { children: ReactNode }) {
 }
 
 export const router = createBrowserRouter([
+  // Login e cadastro têm tela própria, fora do AppShell.
+  {
+    path: 'entrar',
+    errorElement: <RouteError />,
+    element: (
+      <Page>
+        <LoginPage />
+      </Page>
+    ),
+  },
+  {
+    path: 'cadastro',
+    errorElement: <RouteError />,
+    element: (
+      <Page>
+        <SignUpPage />
+      </Page>
+    ),
+  },
   {
     element: <AppShell />,
     errorElement: <RouteError />,
@@ -79,17 +118,21 @@ export const router = createBrowserRouter([
       {
         path: 'orcamentos',
         element: (
-          <Page>
-            <QuotesHistoryPage />
-          </Page>
+          <RequireAuth reason="salvar">
+            <Page>
+              <QuotesHistoryPage />
+            </Page>
+          </RequireAuth>
         ),
       },
       {
         path: 'orcamentos/:id',
         element: (
-          <Page>
-            <SavedQuotePage />
-          </Page>
+          <RequireAuth>
+            <Page>
+              <SavedQuotePage />
+            </Page>
+          </RequireAuth>
         ),
       },
       {
@@ -103,9 +146,47 @@ export const router = createBrowserRouter([
       {
         path: 'orcamentos/:id/calculo',
         element: (
+          <RequireAuth>
+            <Page>
+              <PricingBreakdownPage />
+            </Page>
+          </RequireAuth>
+        ),
+      },
+      {
+        path: 'servicos',
+        element: (
           <Page>
-            <PricingBreakdownPage />
+            <MarketplacePage />
           </Page>
+        ),
+      },
+      {
+        path: 'servicos/:id',
+        element: (
+          <Page>
+            <ListingPage />
+          </Page>
+        ),
+      },
+      {
+        path: 'mensagens',
+        element: (
+          <RequireAuth reason="chat">
+            <Page>
+              <MessagesPage />
+            </Page>
+          </RequireAuth>
+        ),
+      },
+      {
+        path: 'conta',
+        element: (
+          <RequireAuth>
+            <Page>
+              <AccountPage />
+            </Page>
+          </RequireAuth>
         ),
       },
       {

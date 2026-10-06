@@ -1,9 +1,15 @@
-import { Button } from '@heroui/react';
+import { Button, Spinner, toast } from '@heroui/react';
 import { ArrowUpRight, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router';
 
 import { STAGE_META, STAGES } from '@/features/pricing';
-import { clientLabel, describeLocation, quoteTitle, useHistoryStore } from '@/features/quote';
+import {
+  clientLabel,
+  describeLocation,
+  quoteTitle,
+  useRemoveQuote,
+  useSavedQuotes,
+} from '@/features/quote';
 import { EmptyScene } from '@/shared/components/layout/EmptyScene';
 import { SceneHeading } from '@/shared/components/layout/SceneHeading';
 import {
@@ -21,8 +27,8 @@ import { cn } from '@/shared/lib/utils';
 const STAGE_BG = { pre: 'bg-stage-pre', producao: 'bg-stage-producao', pos: 'bg-stage-pos' };
 
 export function QuotesHistoryPage() {
-  const quotes = useHistoryStore((s) => s.quotes);
-  const remove = useHistoryStore((s) => s.remove);
+  const { quotes, isLoading } = useSavedQuotes();
+  const remove = useRemoveQuote();
   const navigate = useNavigate();
 
   return (
@@ -33,7 +39,11 @@ export function QuotesHistoryPage() {
         description="Cada orçamento guarda os custos do estúdio da época em que foi salvo."
       />
 
-      {quotes.length === 0 ? (
+      {isLoading ? (
+        <div className="grid min-h-60 place-items-center">
+          <Spinner aria-label="Carregando orçamentos" />
+        </div>
+      ) : quotes.length === 0 ? (
         <EmptyScene
           title="Nada salvo ainda"
           message="Monte um orçamento e toque em Salvar no resumo para ele aparecer aqui."
@@ -98,8 +108,13 @@ export function QuotesHistoryPage() {
                     size="sm"
                     variant="ghost"
                     aria-label={`Excluir ${quoteTitle(q.draft)}`}
+                    isDisabled={remove.isPending}
                     onPress={() => {
-                      remove(q.id);
+                      remove.mutate(q.id, {
+                        onSuccess: () => {
+                          toast.success('Orçamento excluído');
+                        },
+                      });
                     }}
                   >
                     <Trash2 className="size-4" />

@@ -1,9 +1,9 @@
-import { Button } from '@heroui/react';
+import { Button, Spinner } from '@heroui/react';
 import { ArrowLeft, PencilLine } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router';
 
 import { useDraftStore, useProfileStore } from '@/features/pricing';
-import { PricingBreakdown, useHistoryStore } from '@/features/quote';
+import { PricingBreakdown, useSavedQuote } from '@/features/quote';
 import { formatDateShort } from '@/shared/lib/format';
 
 import { NotFoundPage } from '../not-found/NotFoundPage';
@@ -14,9 +14,16 @@ export function PricingBreakdownPage() {
   const navigate = useNavigate();
   const draft = useDraftStore((s) => s.draft);
   const profile = useProfileStore((s) => s.profile);
-  const saved = useHistoryStore((s) => (id ? s.quotes.find((q) => q.id === id) : undefined));
+  const { data: saved, isLoading } = useSavedQuote(id);
 
-  if (id && !saved) return <NotFoundPage message="Esse orçamento não está no seu histórico." />;
+  if (id && isLoading) {
+    return (
+      <div className="grid min-h-[60dvh] place-items-center">
+        <Spinner aria-label="Carregando orçamento" />
+      </div>
+    );
+  }
+  if (id && !saved) return <NotFoundPage message="Esse orçamento não está na sua conta." />;
 
   const backTo = saved ? `/orcamentos/${saved.id}` : '/orcamento/resumo';
 

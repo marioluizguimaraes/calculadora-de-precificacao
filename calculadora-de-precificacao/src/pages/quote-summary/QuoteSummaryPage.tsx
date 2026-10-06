@@ -1,24 +1,42 @@
-import { Button, toast } from '@heroui/react';
+import { Button, Spinner, toast } from '@heroui/react';
 import { Calculator, FileDown, PencilLine, Save } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
+import { useAuthGate } from '@/features/auth';
 import { calculatePricing, useDraftStore, useProfileStore } from '@/features/pricing';
-import { ProposalDialog, QuoteSummary, useHistoryStore } from '@/features/quote';
+import { ProposalDialog, QuoteSummary, useSavedQuotes, useSaveQuote } from '@/features/quote';
 
 export function QuoteSummaryPage() {
   const draft = useDraftStore((s) => s.draft);
   const profile = useProfileStore((s) => s.profile);
-  const save = useHistoryStore((s) => s.save);
-  const isSaved = useHistoryStore((s) =>
-    s.quotes.some((q) => q.id === draft.id && q.draft.updatedAt === draft.updatedAt),
-  );
+  const { quotes } = useSavedQuotes();
+  const save = useSaveQuote();
+  const gate = useAuthGate();
+  const isSaved = quotes.some((q) => q.id === draft.id && q.draft.updatedAt === draft.updatedAt);
   const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
 
+  // Sem conta, nada é salvo: salvar e baixar o PDF levam ao login e voltam para cá.
   const handleSave = () => {
-    save(draft, profile);
-    toast.success('Orçamento salvo', { description: 'Está no seu histórico de orçamentos.' });
+    if (!gate('salvar')) return;
+    save.mutate(
+      { draft, profile },
+      {
+        onSuccess: () => {
+          toast.success('Orçamento salvo', { description: 'Está nos orçamentos da sua conta.' });
+        },
+        onError: (error) => {
+          toast.danger('Não foi possível salvar', { description: error.message });
+        },
+      },
+    );
+  };
+
+  const handleProposal = () => {
+    if (!gate('pdf')) return;
+    if (!isSaved) save.mutate({ draft, profile });
+    setDialogOpen(true);
   };
 
   return (
@@ -46,15 +64,11 @@ export function QuoteSummaryPage() {
             >
               <PencilLine className="size-4" /> Editar
             </Button>
-            <Button variant="secondary" isDisabled={isSaved} onPress={handleSave}>
-              <Save className="size-4" /> {isSaved ? 'Salvo' : 'Salvar'}
+            <Button variant="secondary" isDisabled={isSaved || save.isPending} onPress={handleSave}>
+              {save.isPending ? <Spinner size="sm" color="current" /> : <Save className="size-4" />}
+              {isSaved ? 'Salvo' : 'Salvar'}
             </Button>
-            <Button
-              onPress={() => {
-                if (!isSaved) save(draft, profile);
-                setDialogOpen(true);
-              }}
-            >
+            <Button onPress={handleProposal}>
               <FileDown className="size-4" /> Gerar proposta
             </Button>
           </>

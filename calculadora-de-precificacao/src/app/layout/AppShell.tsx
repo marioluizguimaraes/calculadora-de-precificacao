@@ -1,13 +1,15 @@
-import { Button, Kbd, toast } from '@heroui/react';
+import { AlertDialog, Button, Kbd, toast } from '@heroui/react';
 import {
   Calculator,
   History,
   House,
+  MessagesSquare,
   Moon,
   Plus,
   Search,
   Settings2,
   SquarePen,
+  Store,
   Sun,
   type LucideIcon,
 } from 'lucide-react';
@@ -15,8 +17,10 @@ import { motion, useMotionValueEvent, useScroll, useSpring } from 'motion/react'
 import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router';
 
+import { UserMenu, useAuth } from '@/features/auth';
+import { useUnreadCount } from '@/features/marketplace';
 import { hasDraftContent, useDraftStore, useProfileStore } from '@/features/pricing';
-import { quoteTitle, useHistoryStore } from '@/features/quote';
+import { quoteTitle, useImportLegacyQuotes, useSaveQuote } from '@/features/quote';
 import { MiniClapper } from '@/shared/components/brand/Clapper';
 import { InteractiveBackground } from '@/shared/components/motion/InteractiveBackground';
 import { env } from '@/shared/config/env';
@@ -30,6 +34,8 @@ interface NavItem {
   label: string;
   icon: LucideIcon;
   end?: boolean;
+  /** Só aparece para quem está logado. */
+  private?: boolean;
 }
 
 const NAV: NavItem[] = [
@@ -37,11 +43,21 @@ const NAV: NavItem[] = [
   { to: '/orcamento', label: 'Orçamento em andamento', icon: SquarePen, end: true },
   { to: '/calculo', label: 'Como o preço foi gerado', icon: Calculator },
   { to: '/orcamentos', label: 'Orçamentos salvos', icon: History },
+  { to: '/servicos', label: 'Marketplace de serviços', icon: Store },
+  { to: '/mensagens', label: 'Mensagens', icon: MessagesSquare, private: true },
   { to: '/estudio', label: 'Meu estúdio', icon: Settings2 },
 ];
 
 /** Botão redondo do trilho: laranja quando ativo, fantasma quando não. */
-function RailLink({ item, compact }: { item: NavItem; compact?: boolean }) {
+function RailLink({
+  item,
+  compact,
+  badge = 0,
+}: {
+  item: NavItem;
+  compact?: boolean;
+  badge?: number;
+}) {
   const Icon = item.icon;
   return (
     <NavLink
@@ -59,7 +75,18 @@ function RailLink({ item, compact }: { item: NavItem; compact?: boolean }) {
       }
     >
       <Icon className={compact ? 'size-4' : 'size-[18px]'} aria-hidden />
-      <span className="sr-only">{item.label}</span>
+      <span className="sr-only">
+        {item.label}
+        {badge > 0 && ` (${badge} não lidas)`}
+      </span>
+      {badge > 0 && (
+        <span
+          aria-hidden
+          className="absolute -top-1 -right-1 grid min-w-4.5 place-items-center rounded-full bg-danger px-1 text-[10px] leading-4 font-semibold text-danger-foreground tabular"
+        >
+          {badge > 9 ? '9+' : badge}
+        </span>
+      )}
       {!compact && (
         <span
           aria-hidden
@@ -79,20 +106,38 @@ export function AppShell() {
   const draft = useDraftStore((s) => s.draft);
   const resetDraft = useDraftStore((s) => s.reset);
   const profile = useProfileStore((s) => s.profile);
-  const saveQuote = useHistoryStore((s) => s.save);
+  const saveQuote = useSaveQuote();
+  const { isAuthenticated } = useAuth();
+  const unread = useUnreadCount();
+  const [confirmDiscard, setConfirmDiscard] = useState(false);
   const isMac = typeof navigator !== 'undefined' && /Mac/i.test(navigator.platform);
+  const nav = NAV.filter((item) => !item.private || isAuthenticated);
+  const badgeFor = (item: NavItem) => (item.to === '/mensagens' ? unread : 0);
 
-  // Novo orçamento: guarda o que estava em andamento no histórico e começa do zero.
-  const startNewQuote = () => {
-    if (hasDraftContent(draft)) {
-      saveQuote(draft, profile);
-      toast.success('Orçamento anterior salvo', {
-        description: `"${quoteTitle(draft)}" está em Orçamentos salvos.`,
-      });
-    }
+  useImportLegacyQuotes();
+
+  const resetAndOpen = () => {
     resetDraft(profile);
     // Sem etapa fixa: o assistente abre na primeira (ou em "Seu estúdio", na primeira vez).
     void navigate('/orcamento');
+  };
+
+  // Novo orçamento: com conta, guarda o que estava em andamento; sem conta, pede confirmação,
+  // porque o rascunho seria perdido.
+  const startNewQuote = () => {
+    if (!hasDraftContent(draft)) {
+      resetAndOpen();
+      return;
+    }
+    if (!isAuthenticated) {
+      setConfirmDiscard(true);
+      return;
+    }
+    saveQuote.mutate({ draft, profile });
+    toast.success('Orçamento anterior salvo', {
+      description: `"${quoteTitle(draft)}" está em Orçamentos salvos.`,
+    });
+    resetAndOpen();
   };
   const { scrollY, scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 24 });
@@ -137,8 +182,8 @@ export function AppShell() {
         aria-label="Principal"
         className="fixed inset-y-0 left-0 z-40 hidden w-20 flex-col items-center gap-3 pt-24 lg:flex"
       >
-        {NAV.map((item) => (
-          <RailLink key={item.to} item={item} />
+        {nav.map((item) => (
+          <RailLink key={item.to} item={item} badge={badgeFor(item)} />
         ))}
       </nav>
 
@@ -209,13 +254,7 @@ export function AppShell() {
               {theme === 'dark' ? <Sun className="size-4" /> : <Moon className="size-4" />}
             </Button>
 
-            <NavLink
-              to="/estudio"
-              aria-label="Meu estúdio"
-              className="grid size-10 shrink-0 place-items-center rounded-full bg-accent text-sm font-semibold text-accent-foreground outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
-            >
-              <Settings2 className="size-4" aria-hidden />
-            </NavLink>
+            <UserMenu />
           </div>
         </div>
 
@@ -224,8 +263,8 @@ export function AppShell() {
           aria-label="Principal (compacta)"
           className="flex items-center gap-2 overflow-x-auto px-4 pb-3 sm:px-6 lg:hidden"
         >
-          {NAV.map((item) => (
-            <RailLink key={item.to} item={item} compact />
+          {nav.map((item) => (
+            <RailLink key={item.to} item={item} compact badge={badgeFor(item)} />
           ))}
         </nav>
       </motion.header>
@@ -235,6 +274,43 @@ export function AppShell() {
       </main>
 
       <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
+
+      <AlertDialog.Backdrop isOpen={confirmDiscard} onOpenChange={setConfirmDiscard}>
+        <AlertDialog.Container>
+          <AlertDialog.Dialog>
+            <AlertDialog.Header>
+              <AlertDialog.Icon status="warning" />
+              <AlertDialog.Heading>Começar outro orçamento?</AlertDialog.Heading>
+            </AlertDialog.Header>
+            <AlertDialog.Body>
+              <p className="text-sm text-muted">
+                Sem uma conta, “{quoteTitle(draft)}” não fica salvo e será descartado. Entre para
+                guardá-lo nos seus orçamentos.
+              </p>
+            </AlertDialog.Body>
+            <AlertDialog.Footer>
+              <Button
+                variant="tertiary"
+                onPress={() => {
+                  setConfirmDiscard(false);
+                  void navigate('/entrar?motivo=salvar&voltar=/orcamento/resumo');
+                }}
+              >
+                Entrar e salvar
+              </Button>
+              <Button
+                variant="danger"
+                onPress={() => {
+                  setConfirmDiscard(false);
+                  resetAndOpen();
+                }}
+              >
+                Descartar e começar
+              </Button>
+            </AlertDialog.Footer>
+          </AlertDialog.Dialog>
+        </AlertDialog.Container>
+      </AlertDialog.Backdrop>
     </div>
   );
 }
