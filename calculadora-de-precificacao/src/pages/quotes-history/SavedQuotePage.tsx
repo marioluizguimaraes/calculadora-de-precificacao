@@ -1,10 +1,11 @@
-import { Button, toast } from '@heroui/react';
-import { Calculator, Copy, FileDown, PencilLine } from 'lucide-react';
+import { Button, Spinner, toast } from '@heroui/react';
+import { Calculator, Copy, FileDown, PencilLine, Store } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
+import { PublishListingDialog, useMyListings } from '@/features/marketplace';
 import { calculatePricing, useDraftStore } from '@/features/pricing';
-import { ProposalDialog, QuoteSummary, useHistoryStore } from '@/features/quote';
+import { ProposalDialog, QuoteSummary, useSavedQuote } from '@/features/quote';
 import { formatDateShort } from '@/shared/lib/format';
 import { createId } from '@/shared/lib/id';
 
@@ -12,12 +13,23 @@ import { NotFoundPage } from '../not-found/NotFoundPage';
 
 export function SavedQuotePage() {
   const { id } = useParams();
-  const quote = useHistoryStore((s) => s.quotes.find((q) => q.id === id));
+  const { data: quote, isLoading } = useSavedQuote(id);
+  const { data: myListings = [] } = useMyListings();
   const replace = useDraftStore((s) => s.replace);
   const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [publishOpen, setPublishOpen] = useState(false);
 
-  if (!quote) return <NotFoundPage message="Esse orçamento não está no seu histórico." />;
+  if (isLoading) {
+    return (
+      <div className="grid min-h-[60dvh] place-items-center">
+        <Spinner aria-label="Carregando orçamento" />
+      </div>
+    );
+  }
+  if (!quote) return <NotFoundPage message="Esse orçamento não está na sua conta." />;
+
+  const published = myListings.find((l) => l.quoteId === quote.id);
 
   const edit = (asCopy: boolean) => {
     const now = new Date().toISOString();
@@ -70,6 +82,16 @@ export function SavedQuotePage() {
               <Copy className="size-4" /> Duplicar
             </Button>
             <Button
+              variant="secondary"
+              onPress={() => {
+                if (published) void navigate(`/servicos/${published.id}`);
+                else setPublishOpen(true);
+              }}
+            >
+              <Store className="size-4" />{' '}
+              {published ? 'Ver oferta publicada' : 'Publicar como serviço'}
+            </Button>
+            <Button
               onPress={() => {
                 setDialogOpen(true);
               }}
@@ -85,6 +107,16 @@ export function SavedQuotePage() {
         draft={quote.draft}
         result={calculatePricing(quote.draft, quote.profile)}
       />
+      {publishOpen && (
+        <PublishListingDialog
+          quote={quote}
+          isOpen={publishOpen}
+          onOpenChange={setPublishOpen}
+          onPublished={(listing) => {
+            void navigate(`/servicos/${listing.id}`);
+          }}
+        />
+      )}
     </div>
   );
 }

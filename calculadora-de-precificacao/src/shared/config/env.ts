@@ -12,6 +12,8 @@ const envSchema = z.object({
   VITE_DEFAULT_LOCALE: z.string().default('pt-BR'),
   VITE_DEFAULT_CURRENCY: z.string().length(3).default('BRL'),
   VITE_STORAGE_KEY: z.string().min(1).default('calc-precificacao:v1'),
+  /** Base da API do sistema. Vazio = dados simulados (mocks de cada feature). */
+  VITE_API_URL: z.preprocess((v) => (v === '' ? undefined : v), z.url().optional()),
 });
 
 /** Variáveis de ambiente validadas na inicialização — falha cedo se algo estiver errado. */

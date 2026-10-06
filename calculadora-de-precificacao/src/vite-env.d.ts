@@ -9,6 +9,7 @@ interface ImportMetaEnv {
   readonly VITE_DEFAULT_LOCALE: string;
   readonly VITE_DEFAULT_CURRENCY: string;
   readonly VITE_STORAGE_KEY: string;
+  readonly VITE_API_URL?: string;
 }
 
 interface ImportMeta {

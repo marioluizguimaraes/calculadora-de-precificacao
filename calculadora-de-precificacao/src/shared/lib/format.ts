@@ -66,3 +66,35 @@ export function pluralize(count: number, singular: string, plural: string): stri
 
 export const toCents = (reais: number) => Math.round(reais * 100);
 export const toReais = (cents: number) => cents / 100;
+
+const time = new Intl.DateTimeFormat(env.VITE_DEFAULT_LOCALE, {
+  hour: '2-digit',
+  minute: '2-digit',
+});
+const relative = new Intl.RelativeTimeFormat(env.VITE_DEFAULT_LOCALE, { numeric: 'auto' });
+
+/** ISO → "14:05". */
+export function formatTime(iso: string): string {
+  return time.format(new Date(iso));
+}
+
+/** ISO → "agora", "há 5 minutos", "ontem"… (até uma semana; depois, a data curta). */
+export function formatRelative(iso: string, now: Date = new Date()): string {
+  const seconds = Math.round((new Date(iso).getTime() - now.getTime()) / 1000);
+  const abs = Math.abs(seconds);
+  if (abs < 45) return 'agora';
+  if (abs < 3_600) return relative.format(Math.round(seconds / 60), 'minute');
+  if (abs < 86_400) return relative.format(Math.round(seconds / 3_600), 'hour');
+  if (abs < 7 * 86_400) return relative.format(Math.round(seconds / 86_400), 'day');
+  return formatDateShort(iso);
+}
+
+const monthYear = new Intl.DateTimeFormat(env.VITE_DEFAULT_LOCALE, {
+  month: 'long',
+  year: 'numeric',
+});
+
+/** ISO → "setembro de 2026". */
+export function formatMonthYear(iso: string): string {
+  return monthYear.format(new Date(iso));
+}

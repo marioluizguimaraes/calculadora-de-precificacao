@@ -7,7 +7,7 @@ interface TextInputProps {
   description?: string;
   placeholder?: string;
   className?: string;
-  type?: 'text' | 'email' | 'tel' | 'url';
+  type?: 'text' | 'email' | 'tel' | 'url' | 'password';
   isRequired?: boolean;
   multiline?: boolean;
   autoComplete?: string;
