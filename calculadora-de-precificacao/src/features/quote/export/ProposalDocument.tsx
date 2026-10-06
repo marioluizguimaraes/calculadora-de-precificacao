@@ -91,7 +91,24 @@ const s = StyleSheet.create({
   stageBlock: { flexDirection: 'row', marginBottom: 10 },
   stageBar: { width: 3, borderRadius: 2, marginRight: 10 },
   stageTitle: { fontFamily: 'Helvetica-Bold', fontSize: 10 },
-  stageItems: { color: C.muted, fontSize: 9, marginTop: 2, lineHeight: 1.45 },
+  stageHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' },
+  serviceRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 3,
+    borderBottomWidth: 0.5,
+    borderBottomColor: C.rule,
+    fontSize: 9,
+  },
+  serviceHours: { fontFamily: 'Helvetica-Bold', fontSize: 9, marginLeft: 12 },
+  hoursTotal: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 4,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: C.ink,
+  },
   table: { borderTopWidth: 1, borderTopColor: C.rule },
   row: {
     flexDirection: 'row',
@@ -237,6 +254,9 @@ export function ProposalDocument({
 
         <View style={s.section}>
           <Text style={s.h2}>Como o trabalho acontece</Text>
+          <Text style={[s.small, { marginBottom: 10 }]}>
+            Cada serviço do projeto e as horas de trabalho dedicadas a ele.
+          </Text>
           {STAGES.map((stage) => {
             const items = draft.services.filter((x) => x.stage === stage);
             if (items.length === 0) return null;
@@ -245,20 +265,28 @@ export function ProposalDocument({
               <View key={stage} style={s.stageBlock} wrap={false}>
                 <View style={[s.stageBar, { backgroundColor: C.stage[stage] }]} />
                 <View style={{ flex: 1 }}>
-                  <Text style={s.stageTitle}>
-                    {STAGE_META[stage].label}
-                    <Text style={s.small}>
-                      {'  '}
-                      {stage === 'producao'
-                        ? pluralize(summary.days, 'diária de gravação', 'diárias de gravação')
-                        : formatHours(summary.hours)}
-                    </Text>
-                  </Text>
-                  <Text style={s.stageItems}>{items.map((i) => i.label).join(' · ')}</Text>
+                  <View style={s.stageHead}>
+                    <Text style={s.stageTitle}>{STAGE_META[stage].label}</Text>
+                    <Text style={s.stageTitle}>{formatHours(summary.hours)}</Text>
+                  </View>
+                  <View style={{ marginTop: 4 }}>
+                    {items.map((item) => (
+                      <View key={item.serviceId} style={s.serviceRow}>
+                        <Text style={{ flex: 1, color: C.muted }}>{item.label}</Text>
+                        <Text style={s.serviceHours}>{formatHours(Math.max(0, item.hours))}</Text>
+                      </View>
+                    ))}
+                  </View>
                 </View>
               </View>
             );
           })}
+          {result.totalHours > 0 && (
+            <View style={s.hoursTotal} wrap={false}>
+              <Text style={s.stageTitle}>Total de horas de trabalho</Text>
+              <Text style={s.stageTitle}>{formatHours(result.totalHours)}</Text>
+            </View>
+          )}
         </View>
 
         {(draft.team.length > 0 || draft.equipment.length > 0) && (
@@ -360,7 +388,6 @@ export function ProposalDocument({
               {[
                 ['Custo da hora de trabalho', formatMoney(result.hourlyCostCents)],
                 ['Horas de trabalho', formatHours(result.totalHours)],
-                ['Diárias de gravação', String(result.captureDays)],
                 ['Custo direto total', formatMoney(result.directCostCents)],
                 [
                   'Impostos, taxas e comissão',
