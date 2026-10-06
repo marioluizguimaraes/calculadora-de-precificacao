@@ -1,0 +1,54 @@
+[
+  {
+    "id": "u-demo",
+    "name": "Mario Demo",
+    "email": "demo@claquete.app",
+    "password": "claquete123",
+    "businessName": "Claquete Filmes",
+    "headline": "Filmes institucionais e conteúdo para marcas",
+    "city": { "id": 3106200, "name": "Belo Horizonte", "uf": "MG" },
+    "specialties": ["Institucional", "Redes sociais", "Edição e color"],
+    "bio": "Produtora enxuta que cuida do roteiro à entrega. Atendo empresas de BH e região.",
+    "phone": "(31) 99999-0000",
+    "createdAt": "2026-06-02T12:00:00.000Z"
+  },
+  {
+    "id": "u-lia",
+    "name": "Lia Campos",
+    "email": "lia@exemplo.com",
+    "password": "claquete123",
+    "businessName": "Lia Campos Filmes",
+    "headline": "Filmes de casamento com cara de cinema",
+    "city": { "id": 3550308, "name": "São Paulo", "uf": "SP" },
+    "specialties": ["Casamentos", "Imagens aéreas (drone)", "Edição e color"],
+    "bio": "Oito anos filmando casamentos em SP e no litoral. Equipe de duas câmeras e drone.",
+    "phone": "(11) 98888-1111",
+    "createdAt": "2026-03-10T12:00:00.000Z"
+  },
+  {
+    "id": "u-rafa",
+    "name": "Rafael Nunes",
+    "email": "rafa@exemplo.com",
+    "password": "claquete123",
+    "businessName": "Nunes Produções",
+    "headline": "Eventos corporativos e transmissões ao vivo",
+    "city": { "id": 3304557, "name": "Rio de Janeiro", "uf": "RJ" },
+    "specialties": ["Eventos corporativos", "Transmissão ao vivo", "Institucional"],
+    "bio": "Cobertura de congressos, feiras e lançamentos, com transmissão multicâmera.",
+    "phone": "(21) 97777-2222",
+    "createdAt": "2026-04-18T12:00:00.000Z"
+  },
+  {
+    "id": "u-bia",
+    "name": "Beatriz Lopes",
+    "email": "bia@exemplo.com",
+    "password": "claquete123",
+    "businessName": "Bia Motion",
+    "headline": "Reels, motion e edição para redes sociais",
+    "city": { "id": 4106902, "name": "Curitiba", "uf": "PR" },
+    "specialties": ["Redes sociais", "Motion design", "Edição e color"],
+    "bio": "Pacotes mensais de vídeos curtos para marcas e criadores.",
+    "phone": "(41) 96666-3333",
+    "createdAt": "2026-05-05T12:00:00.000Z"
+  }
+]
