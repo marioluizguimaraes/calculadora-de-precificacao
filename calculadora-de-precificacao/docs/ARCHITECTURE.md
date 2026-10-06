@@ -32,8 +32,10 @@ src/
 │   │   ├── engine/        # Funções PURAS de cálculo (sem React) — núcleo testado
 │   │   ├── store/         # Perfil do estúdio + rascunho do orçamento (Zustand persist)
 │   │   └── components/    # Monitor ao vivo, timeline, composição, etapa de margem
-│   └── quote/             # Resumo, histórico salvo e proposta
-│       └── export/        # PDF (@react-pdf/renderer, carregado sob demanda)
+│   ├── quote/             # Resumo, orçamentos salvos na conta e proposta
+│   │   └── export/        # PDF (@react-pdf/renderer, carregado sob demanda)
+│   ├── auth/              # Conta: login, cadastro em etapas, sessão, perfil público
+│   └── marketplace/       # Ofertas públicas de serviço, busca e chat por oferta
 │
 ├── shared/              # Código reutilizável e agnóstico de domínio
 │   ├── components/      # ui/ (shadcn), react-bits/ (animações), layout/, form/ (campos + RHF)
@@ -70,3 +72,26 @@ features/<nome>/
 3. **Valores monetários em centavos (inteiros)** para evitar erro de ponto flutuante; formatar só na borda (UI).
 4. **Validação na entrada**: todo formulário passa por um schema Zod; `import.meta.env` também é validado.
 5. **Testes ao lado do código**: `arquivo.test.ts` na mesma pasta do arquivo testado.
+
+## Dados da API e mocks
+
+Contas, orçamentos salvos, ofertas e chat passam por `shared/api/client.ts`:
+
+```ts
+apiRequest({ method: 'POST', path: '/ofertas', body: input }, () => mock.publish(input));
+```
+
+Cada chamada descreve o endpoint REST **e** o handler do mock. Sem `VITE_API_URL`, responde o
+mock (`features/<nome>/mocks/handlers.ts`), que parte dos JSON da mesma pasta e grava as
+alterações no localStorage. Com `VITE_API_URL` definido, a mesma chamada vira um `fetch` com
+`Authorization: Bearer <token>` — componentes e hooks não mudam.
+
+| Feature       | Endpoints                                                                                                                                                                                                             | Sementes                                                       |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `auth`        | `POST /auth/login`, `POST /auth/cadastro`, `GET /auth/email-disponivel`, `PATCH /me`                                                                                                                                  | `users.json` (conta demo: `demo@claquete.app` / `claquete123`) |
+| `quote`       | `GET /me/orcamentos`, `GET/PUT/DELETE /me/orcamentos/:id`                                                                                                                                                             | `quotes.json`                                                  |
+| `marketplace` | `GET/POST /ofertas`, `GET/PATCH/DELETE /ofertas/:id`, `GET /me/ofertas`, `GET /ofertas/:id/conversas`, `POST /ofertas/:id/mensagens`, `GET /me/conversas`, `GET /conversas/:id/mensagens`, `POST /conversas/:id/lida` | `listings.json`, `conversations.json`, `messages.json`         |
+
+Regras de acesso que a API real precisa manter (os testes dos handlers documentam cada uma):
+sem login nada é salvo; cada conta só lê os próprios orçamentos; uma conversa pertence a uma
+oferta e a um interessado, e só os dois participantes a leem.
