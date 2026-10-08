@@ -8,6 +8,7 @@ import {
   markup,
   productiveHours,
   roundUpPrice,
+  teamMemberCost,
 } from './formulas';
 
 describe('custo da hora', () => {
@@ -93,5 +94,32 @@ describe('rateio', () => {
 
   it('coloca tudo no primeiro item quando não há pesos', () => {
     expect(allocate(500, [0, 0])).toEqual([500, 0]);
+  });
+});
+
+describe('teamMemberCost', () => {
+  const stage = { days: 2, hours: 12 };
+  const base = {
+    billing: 'diaria' as const,
+    dailyRateCents: 40_000,
+    count: 2,
+    days: null,
+    hourlyRateCents: 6_000,
+    hours: null,
+  };
+
+  it('por diária: diária × pessoas × dias (da etapa ou próprios)', () => {
+    expect(teamMemberCost(base, stage)).toBe(160_000);
+    expect(teamMemberCost({ ...base, days: 1 }, stage)).toBe(80_000);
+  });
+
+  it('por hora: valor da hora × pessoas × horas (da etapa ou próprias)', () => {
+    const hourly = { ...base, billing: 'hora' as const };
+    expect(teamMemberCost(hourly, stage)).toBe(144_000);
+    expect(teamMemberCost({ ...hourly, hours: 5, count: 1 }, stage)).toBe(30_000);
+  });
+
+  it('por hora sem valor: participa sem custo', () => {
+    expect(teamMemberCost({ ...base, billing: 'hora', hourlyRateCents: 0 }, stage)).toBe(0);
   });
 });

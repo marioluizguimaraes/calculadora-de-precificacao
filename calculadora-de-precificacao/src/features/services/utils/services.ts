@@ -1,4 +1,10 @@
-import type { QuoteDraft, SelectedService, TeamMember, Tier } from '@/features/pricing';
+import {
+  teamMemberDefaults,
+  type QuoteDraft,
+  type SelectedService,
+  type TeamMember,
+  type Tier,
+} from '@/features/pricing';
 import { ROLE_BY_ID } from '@/features/team';
 import { createId } from '@/shared/lib/id';
 
@@ -23,9 +29,8 @@ export function applyPreset(draft: QuoteDraft, preset: ProjectPreset): QuoteDraf
             id: createId(),
             role: role.label,
             stage,
-            dailyRateCents: role.dailyRateCents,
+            ...teamMemberDefaults(role.dailyRateCents),
             count: 1,
-            days: null,
           },
         ]
       : [];

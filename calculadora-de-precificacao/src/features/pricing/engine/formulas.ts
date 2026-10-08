@@ -3,6 +3,8 @@
  * Funções puras: recebem números, devolvem números. Valores monetários em centavos.
  */
 
+import type { TeamMember } from '../types';
+
 /** Horas produtivas no mês = dias trabalhados × horas por dia. */
 export function productiveHours(workDaysPerMonth: number, hoursPerDay: number): number {
   return Math.max(0, workDaysPerMonth) * Math.max(0, hoursPerDay);
@@ -39,6 +41,24 @@ export function dailyDepreciation(
 export function daysFromHours(hours: number, hoursPerDay: number): number {
   if (hours <= 0 || hoursPerDay <= 0) return 0;
   return Math.ceil(hours / hoursPerDay - 1e-9);
+}
+
+/**
+ * Custo de um profissional da equipe. Por diária: diária × pessoas × dias.
+ * Por hora: valor da hora × pessoas × horas. Sem dias/horas próprios, segue os da etapa.
+ */
+export function teamMemberCost(
+  member: Pick<
+    TeamMember,
+    'billing' | 'dailyRateCents' | 'count' | 'days' | 'hourlyRateCents' | 'hours'
+  >,
+  stage: { days: number; hours: number },
+): number {
+  const people = Math.max(0, member.count);
+  if (member.billing === 'hora') {
+    return Math.round(member.hourlyRateCents * people * Math.max(0, member.hours ?? stage.hours));
+  }
+  return member.dailyRateCents * people * Math.max(0, member.days ?? stage.days);
 }
 
 /**

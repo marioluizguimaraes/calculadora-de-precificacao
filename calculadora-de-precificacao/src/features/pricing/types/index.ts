@@ -90,14 +90,22 @@ export interface QuoteEquipment {
   days: number | null;
 }
 
+/** Como o profissional cobra: por diária ou pelas horas que assume no projeto. */
+export type TeamBilling = 'diaria' | 'hora';
+
 export interface TeamMember {
   id: string;
   role: string;
   stage: Stage;
+  billing: TeamBilling;
   dailyRateCents: number;
   count: number;
   /** `null` = acompanha os dias da etapa. */
   days: number | null;
+  /** Cobrança por hora: valor de cada hora (0 = participa sem custo no orçamento). */
+  hourlyRateCents: number;
+  /** Cobrança por hora: horas de cada pessoa. `null` = acompanha as horas da etapa. */
+  hours: number | null;
 }
 
 export interface ExtraCost {

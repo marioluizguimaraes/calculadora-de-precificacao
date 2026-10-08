@@ -17,7 +17,7 @@ realidade de quem presta o serviço. O sistema coleta esse contexto e aplica as 
 | Serviços          | Tipo de produção (tier) e sub-serviços por etapa (abaixo)                                                                                            | `services`         |
 | Tempo             | Horas ou diárias por etapa/sub-serviço                                                                                                               | `work-stages`      |
 | Equipamentos      | Próprio: valor de compra, valor de revenda, vida útil. Locado: valor da diária                                                                       | `equipment`        |
-| Equipe            | Função, cachê por diária/hora, quantidade de diárias                                                                                                 | `team`             |
+| Equipe            | Função, cobrança por diária (diária × diárias) ou por hora (valor da hora × horas no projeto)                                                        | `team`             |
 | Custos variáveis  | Deslocamento (km, combustível, pedágio), alimentação, hospedagem, seguro, locação de espaço, trilha/banco de imagens                                 | `costs`            |
 | Margem            | Lucro pretendido (%) — referência de mercado 20–30%                                                                                                  | `pricing`          |
 
@@ -48,7 +48,7 @@ horasProdutivasMes = diasTrabalhadosMes × horasPorDia
 custoHora          = custoFixoMensal ÷ horasProdutivasMes
 
 # 2. Mão de obra direta
-maoDeObra = Σ (custoHora × horasDaEtapa)  +  Σ (cachêEquipe × diárias)
+maoDeObra = Σ (custoHora × horasDaEtapa)  +  Σ (diária × pessoas × diárias  |  valorHora × pessoas × horas)
 
 # 3. Equipamentos
 depreciaçãoAnual  = (valorCompra − valorRevenda) ÷ anosVidaÚtil

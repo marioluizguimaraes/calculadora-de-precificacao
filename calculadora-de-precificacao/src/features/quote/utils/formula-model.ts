@@ -1,4 +1,5 @@
 import {
+  teamMemberCost,
   STAGE_META,
   type BusinessProfile,
   type PricingResult,
@@ -461,30 +462,47 @@ export function buildFormulaModel(
     {
       id: 'equipe',
       title: 'Equipe contratada',
-      why: 'Cada profissional entra pela diária, na etapa em que trabalha. Por padrão, as diárias seguem as da etapa.',
+      why: 'Cada profissional entra pela diária ou pelas horas que assume, na etapa em que trabalha. Sem dias ou horas próprios, segue os da etapa.',
       resultId: 'equipe',
       tokens: [
         op('Σ'),
         op('('),
-        val('Diária', 'cada um'),
+        val('Diária ou hora', 'cada um'),
         op('×'),
         val('Pessoas', 'cada um'),
         op('×'),
-        val('Diárias', 'da etapa'),
+        val('Diárias ou horas', 'da etapa'),
         op(')'),
       ],
       details: draft.team.map((m) => {
-        const d = m.days ?? result.stages[m.stage].days;
+        const stage = result.stages[m.stage];
+        const people = val('Pessoas', formatNumber(m.count));
+        const cost = formatMoney(teamMemberCost(m, stage));
+        if (m.billing === 'hora') {
+          const h = m.hours ?? stage.hours;
+          return {
+            label: m.role,
+            tokens: [
+              val('Valor da hora', formatMoney(m.hourlyRateCents)),
+              op('×'),
+              people,
+              op('×'),
+              val('Horas', formatHours(h), m.hours === null ? 'calculado' : 'orcamento'),
+            ],
+            result: cost,
+          };
+        }
+        const d = m.days ?? stage.days;
         return {
           label: m.role,
           tokens: [
             val('Diária', formatMoney(m.dailyRateCents)),
             op('×'),
-            val('Pessoas', formatNumber(m.count)),
+            people,
             op('×'),
             val('Diárias', formatNumber(d), m.days === null ? 'calculado' : 'orcamento'),
           ],
-          result: formatMoney(m.dailyRateCents * Math.max(0, m.count) * d),
+          result: cost,
         };
       }),
     },

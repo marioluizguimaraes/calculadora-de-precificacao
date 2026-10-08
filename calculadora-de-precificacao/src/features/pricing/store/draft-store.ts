@@ -51,7 +51,8 @@ export const useDraftStore = create<DraftState>()(
     {
       name: `${env.VITE_STORAGE_KEY}:rascunho`,
       // v2: modo de transporte (próprio ou valor fixo) na logística.
-      version: 2,
+      // v3: equipe cobrando por diária ou por hora.
+      version: 3,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ draft: state.draft }),
       migrate: (persisted) => {

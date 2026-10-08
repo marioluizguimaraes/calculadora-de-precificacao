@@ -17,6 +17,7 @@ import {
   markup,
   productiveHours,
   roundUpPrice,
+  teamMemberCost,
 } from './formulas';
 
 export const STAGES: readonly Stage[] = ['pre', 'producao', 'pos'];
@@ -71,7 +72,7 @@ export function calculatePricing(draft: QuoteDraft, profile: BusinessProfile): P
     sum(
       draft.team
         .filter((m) => m.stage === stage)
-        .map((m) => m.dailyRateCents * Math.max(0, m.count) * (m.days ?? stageDays[m.stage])),
+        .map((m) => teamMemberCost(m, { days: stageDays[m.stage], hours: stageHours[m.stage] })),
     );
   const peopleOnSet =
     1 + sum(draft.team.filter((m) => m.stage === 'producao').map((m) => Math.max(0, m.count)));

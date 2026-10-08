@@ -93,6 +93,24 @@ export function createEmptyDraft(profile: BusinessProfile): QuoteDraft {
  * Completa um rascunho salvo por uma versão anterior com os campos que surgiram depois
  * (ex.: modo de transporte). Mantém tudo o que já existia.
  */
+/** Profissional cobrando por diária — o padrão das funções de set. */
+export function teamMemberDefaults(dailyRateCents: number) {
+  return {
+    billing: 'diaria' as const,
+    dailyRateCents,
+    days: null,
+    // Sugestão para quem troca para hora: a diária dividida por uma jornada de 8 h.
+    hourlyRateCents: Math.round(dailyRateCents / 8),
+    hours: null,
+  };
+}
+
+/** Completa rascunhos salvos antes de novos campos existirem. */
 export function normalizeDraft(draft: QuoteDraft): QuoteDraft {
-  return { ...draft, logistics: { ...DEFAULT_LOGISTICS, ...draft.logistics } };
+  return {
+    ...draft,
+    logistics: { ...DEFAULT_LOGISTICS, ...draft.logistics },
+    // Equipe salva antes da cobrança por hora entra como diária.
+    team: draft.team.map((m) => ({ ...teamMemberDefaults(m.dailyRateCents), ...m })),
+  };
 }

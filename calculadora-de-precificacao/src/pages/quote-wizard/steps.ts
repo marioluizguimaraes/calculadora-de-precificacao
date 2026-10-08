@@ -77,7 +77,8 @@ export const WIZARD_STEPS: WizardStep[] = [
     id: 'equipe',
     label: 'Equipe',
     title: 'Quem mais está com você?',
-    description: 'Freelancers e parceiros entram pela diária, na etapa em que trabalham.',
+    description:
+      'Freelancers e parceiros entram pela diária ou pelas horas que assumem, na etapa em que trabalham.',
     Component: TeamStep,
     isComplete: () => true,
   },

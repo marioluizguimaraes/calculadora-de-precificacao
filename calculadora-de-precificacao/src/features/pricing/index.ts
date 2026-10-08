@@ -1,12 +1,13 @@
 export * from './types';
 export { calculatePricing, STAGES, LOW_PROFIT_THRESHOLD_PCT } from './engine/calculate';
-export { dailyDepreciation, roundUpPrice } from './engine/formulas';
+export { dailyDepreciation, roundUpPrice, teamMemberCost } from './engine/formulas';
 export {
   createDefaultProfile,
   createDefaultPricing,
   createEmptyDraft,
   DEFAULT_LOGISTICS,
   normalizeDraft,
+  teamMemberDefaults,
 } from './constants/defaults';
 export {
   STAGE_META,

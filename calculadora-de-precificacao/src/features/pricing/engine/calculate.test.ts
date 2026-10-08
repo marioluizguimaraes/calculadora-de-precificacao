@@ -186,3 +186,54 @@ describe('normalizeDraft — rascunhos salvos antes do modo de transporte', () =
     );
   });
 });
+
+describe('calculatePricing — equipe por hora', () => {
+  const profile = makeProfile();
+
+  it('cobra pelas horas assumidas no projeto, não pela diária', () => {
+    const draft = makeDraft(profile);
+    const [assistente, editor] = draft.team;
+    if (!assistente || !editor) throw new Error('fixture sem equipe');
+    const hourly = {
+      ...draft,
+      team: [
+        assistente,
+        { ...editor, billing: 'hora' as const, hourlyRateCents: 7_000, hours: 10 },
+      ],
+    };
+    // Assistente: 350 × 1 diária. Editor: 70 × 10 h.
+    expect(calculatePricing(hourly, profile).teamCents).toBe(35_000 + 70_000);
+  });
+
+  it('sem horas próprias, segue as horas da etapa', () => {
+    const draft = makeDraft(profile);
+    const [, base] = draft.team;
+    if (!base) throw new Error('fixture sem editor');
+    const editor = { ...base, billing: 'hora' as const, hourlyRateCents: 5_000 };
+    // Pós-produção tem 12 h de serviços.
+    expect(calculatePricing({ ...draft, team: [editor] }, profile).teamCents).toBe(60_000);
+  });
+});
+
+describe('normalizeDraft — equipe salva antes da cobrança por hora', () => {
+  it('entra como diária e o preço não muda', async () => {
+    const { normalizeDraft } = await import('../constants/defaults');
+    const profile = makeProfile();
+    const draft = makeDraft(profile);
+    const legacyTeam = draft.team.map(({ id, role, stage, dailyRateCents, count, days }) => ({
+      id,
+      role,
+      stage,
+      dailyRateCents,
+      count,
+      days,
+    }));
+    const legacy = { ...draft, team: legacyTeam } as unknown as typeof draft;
+    const migrated = normalizeDraft(legacy);
+    expect(migrated.team.every((m) => m.billing === 'diaria' && m.hours === null)).toBe(true);
+    expect(migrated.team[0]?.hourlyRateCents).toBe(Math.round(35_000 / 8));
+    expect(calculatePricing(migrated, profile).suggestedPriceCents).toBe(
+      calculatePricing(draft, profile).suggestedPriceCents,
+    );
+  });
+});
