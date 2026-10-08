@@ -1,5 +1,5 @@
 import { Button, Spinner, toast } from '@heroui/react';
-import { Calculator, Copy, FileDown, PencilLine, Store } from 'lucide-react';
+import { Calculator, Copy, FileDown, PencilLine, Presentation, Store } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
@@ -90,6 +90,14 @@ export function SavedQuotePage() {
             >
               <Store className="size-4" />{' '}
               {published ? 'Ver oferta publicada' : 'Publicar como serviço'}
+            </Button>
+            <Button
+              variant="secondary"
+              onPress={() => {
+                void navigate(`/orcamentos/${quote.id}/apresentacao`);
+              }}
+            >
+              <Presentation className="size-4" /> Apresentação
             </Button>
             <Button
               onPress={() => {

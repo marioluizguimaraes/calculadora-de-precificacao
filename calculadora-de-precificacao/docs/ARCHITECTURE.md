@@ -16,6 +16,7 @@ src/
 │   ├── home/
 │   ├── quote-wizard/    # Fluxo em cenas + steps.ts (ordem e textos de cada etapa)
 │   ├── quote-summary/   # Resultado: breakdown de custos e preço final
+│   ├── presentation/    # Apresentação em tela cheia (/apresentacao, /orcamentos/:id/apresentacao)
 │   ├── quotes-history/  # Orçamentos salvos
 │   ├── settings/        # Perfil do negócio (custos fixos, regime tributário)
 │   └── not-found/
@@ -33,7 +34,8 @@ src/
 │   │   ├── store/         # Perfil do estúdio + rascunho do orçamento (Zustand persist)
 │   │   └── components/    # Monitor ao vivo, timeline, composição, etapa de margem
 │   ├── quote/             # Resumo, orçamentos salvos na conta e proposta
-│   │   └── export/        # PDF (@react-pdf/renderer, carregado sob demanda)
+│   │   ├── export/        # PDF (@react-pdf/renderer, carregado sob demanda)
+│   │   └── presentation/  # Proposta em slides para a reunião (deck.ts monta o roteiro)
 │   ├── auth/              # Conta: login, cadastro em etapas, sessão, perfil público
 │   └── marketplace/       # Ofertas públicas de serviço, busca e chat por oferta
 │

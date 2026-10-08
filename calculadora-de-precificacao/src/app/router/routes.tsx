@@ -49,6 +49,9 @@ const MessagesPage = lazy(() =>
 const AccountPage = lazy(() =>
   import('@/pages/account/AccountPage').then((m) => ({ default: m.AccountPage })),
 );
+const PresentationPage = lazy(() =>
+  import('@/pages/presentation/PresentationPage').then((m) => ({ default: m.PresentationPage })),
+);
 const NotFoundPage = lazy(() =>
   import('@/pages/not-found/NotFoundPage').then((m) => ({ default: m.NotFoundPage })),
 );
@@ -85,6 +88,27 @@ export const router = createBrowserRouter([
       <Page>
         <SignUpPage />
       </Page>
+    ),
+  },
+  // Apresentação da proposta: tela cheia, sem a navegação do app.
+  {
+    path: 'apresentacao',
+    errorElement: <RouteError />,
+    element: (
+      <Page>
+        <PresentationPage />
+      </Page>
+    ),
+  },
+  {
+    path: 'orcamentos/:id/apresentacao',
+    errorElement: <RouteError />,
+    element: (
+      <RequireAuth>
+        <Page>
+          <PresentationPage />
+        </Page>
+      </RequireAuth>
     ),
   },
   {

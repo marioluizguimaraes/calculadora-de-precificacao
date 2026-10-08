@@ -1,5 +1,5 @@
 import { Button, Spinner, toast } from '@heroui/react';
-import { Calculator, FileDown, PencilLine, Save } from 'lucide-react';
+import { Calculator, FileDown, PencilLine, Presentation, Save } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -67,6 +67,14 @@ export function QuoteSummaryPage() {
             <Button variant="secondary" isDisabled={isSaved || save.isPending} onPress={handleSave}>
               {save.isPending ? <Spinner size="sm" color="current" /> : <Save className="size-4" />}
               {isSaved ? 'Salvo' : 'Salvar'}
+            </Button>
+            <Button
+              variant="secondary"
+              onPress={() => {
+                void navigate('/apresentacao');
+              }}
+            >
+              <Presentation className="size-4" /> Apresentação
             </Button>
             <Button onPress={handleProposal}>
               <FileDown className="size-4" /> Gerar proposta

@@ -10,3 +10,5 @@ export {
   useSaveQuote,
 } from './hooks/useSavedQuotes';
 export { describeLocation, quoteTitle, clientLabel } from './utils/describe';
+export { ProposalDeck } from './presentation/ProposalDeck';
+export type { DeckData } from './presentation/deck';
